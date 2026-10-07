@@ -1,0 +1,704 @@
+/* ============================================================
+   RIANNI FLIX — Jellyfin 12.x custom theme
+   Palette + type lifted from riannitech.com design tokens.
+   Paste the whole file into Dashboard → Branding → Custom CSS.
+   Replace any previous custom CSS (skip button / Up Next blocks
+   are included here). No restart needed — Save, then hard-refresh.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ------------------------------------------------------------
+   1. TOKENS (riannitech.com)
+   ------------------------------------------------------------ */
+:root {
+  --rf-bg: #0a0a0f;
+  --rf-bg-deep: #050509;
+  --rf-surface: #11111a;
+  --rf-surface-elevated: #181823;
+  --rf-surface-glass: rgba(24, 24, 35, 0.55);
+  --rf-border: rgba(255, 255, 255, 0.08);
+  --rf-border-strong: rgba(255, 255, 255, 0.16);
+  --rf-text: #f5f5f7;
+  --rf-text-muted: #9b9bab;
+  --rf-text-dim: #8a8a99;
+
+  --rf-accent-1: #f59e0b;                       /* amber */
+  --rf-accent-1-dark: #d97706;
+  --rf-accent-1-soft: rgba(245, 158, 11, 0.18);
+  --rf-accent-1-glow: rgba(245, 158, 11, 0.45);
+  --rf-accent-2: #ec4899;                       /* pink */
+  --rf-accent-2-soft: rgba(236, 72, 153, 0.18);
+  --rf-accent-2-glow: rgba(236, 72, 153, 0.45);
+  --rf-gradient: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+  --rf-gradient-soft: linear-gradient(135deg, rgba(245,158,11,.16) 0%, rgba(236,72,153,.16) 100%);
+  --rf-gradient-flow: linear-gradient(90deg, #f59e0b, #ec4899, #f59e0b);
+
+  --rf-radius-sm: 10px;
+  --rf-radius-md: 16px;
+  --rf-radius-lg: 24px;
+  --rf-radius-pill: 999px;
+  --rf-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --rf-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --rf-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --rf-ease-snap: cubic-bezier(0.34, 1.4, 0.44, 1);
+
+  --rf-font-display: 'Space Grotesk', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --rf-font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Optional header logo. Host the image somewhere stable (e.g. https://rianniflix.com/logo.svg
+     via NPM, or Cloudflare) and set it here. Leave as none to use gradient wordmark text. */
+  --rf-logo-url: none;
+  --rf-logo-width: 140px;
+  --rf-logo-height: 28px;
+}
+
+/* ------------------------------------------------------------
+   2. JELLYFIN PALETTE OVERRIDES (MUI vars, 12.x)
+   ------------------------------------------------------------ */
+:root,
+html[data-theme],
+html[data-theme="dark"] {
+  --jf-palette-primary-main: var(--rf-accent-1);
+  --jf-palette-primary-mainChannel: 245 158 11;
+  --jf-palette-primary-dark: var(--rf-accent-1-dark);
+  --jf-palette-primary-light: #fbbf24;
+  --jf-palette-primary-contrastText: var(--rf-bg);
+  --jf-palette-secondary-main: var(--rf-accent-2);
+  --jf-palette-secondary-mainChannel: 236 72 153;
+  --jf-palette-secondary-contrastText: #ffffff;
+
+  --jf-palette-background-default: var(--rf-bg);
+  --jf-palette-background-paper: var(--rf-surface);
+  --jf-palette-background-paperChannel: 17 17 26;
+  --jf-palette-background-defaultImage:
+    radial-gradient(900px 600px at 8% 0%, rgba(245,158,11,.10), transparent 60%),
+    radial-gradient(800px 600px at 100% 100%, rgba(236,72,153,.08), transparent 60%);
+
+  --jf-palette-text-primary: var(--rf-text);
+  --jf-palette-text-secondary: var(--rf-text-muted);
+  --jf-palette-divider: var(--rf-border);
+  --jf-palette-action-hover: rgba(255, 255, 255, 0.06);
+  --jf-palette-action-focus: var(--rf-accent-1-soft);
+
+  --jf-palette-AppBar-defaultBg: rgba(10, 10, 15, 0.78);
+  --jf-palette-AppBar-transparentBg: rgba(10, 10, 15, 0.35);
+  --jf-palette-AppBar-gradient: none;
+  --jf-palette-Button-inheritContainedBg: var(--rf-surface-elevated);
+  --jf-palette-Button-inheritContainedHoverBg: #22222f;
+  --jf-palette-FilledInput-bg: var(--rf-surface);
+  --jf-palette-FilledInput-borderColor: var(--rf-border-strong);
+  --jf-palette-SnackbarContent-bg: var(--rf-surface-elevated);
+  --jf-palette-SnackbarContent-color: var(--rf-text);
+  --jf-palette-starIcon-main: var(--rf-accent-1);
+
+  --jf-card-borderRadius: var(--rf-radius-sm);
+}
+
+/* ------------------------------------------------------------
+   3. BASE: type, background, selection, scrollbars
+   ------------------------------------------------------------ */
+html, body {
+  font-family: var(--rf-font-body) !important;
+  color: var(--rf-text);
+  background-color: var(--rf-bg) !important;
+}
+
+h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
+.actionSheetTitle, .upNextDialog-title, .MuiTypography-h1, .MuiTypography-h2,
+.MuiTypography-h3, .MuiTypography-h4, .MuiTypography-h5, .MuiTypography-h6 {
+  font-family: var(--rf-font-display) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em;
+}
+
+.backgroundContainer {
+  background-color: var(--rf-bg) !important;
+  background-image: var(--jf-palette-background-defaultImage) !important;
+  background-attachment: fixed;
+}
+.backgroundContainer.withBackdrop { opacity: 0.88; }
+
+/* Backdrop images: deepen + warm tint so posters pop */
+.backdropImage {
+  filter: saturate(1.05) brightness(0.55);
+}
+.backdropContainer::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10,10,15,.35) 0%, rgba(10,10,15,.65) 60%, var(--rf-bg) 100%),
+    var(--rf-gradient-soft);
+  pointer-events: none;
+}
+
+::selection { background: var(--rf-accent-1-soft); color: var(--rf-text); }
+
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent !important; }
+::-webkit-scrollbar { width: .5em; height: .5em; }
+::-webkit-scrollbar-track-piece { background: transparent !important; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.18) !important;
+  border-radius: var(--rf-radius-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--rf-accent-1) !important; }
+
+:focus-visible { outline: 2px solid var(--rf-accent-1); outline-offset: 2px; }
+
+/* ------------------------------------------------------------
+   4. HEADER — modern MUI app bar + legacy/TV skinHeader
+   ------------------------------------------------------------ */
+.MuiAppBar-root,
+.skinHeader-withBackground {
+  background-color: rgba(10, 10, 15, 0.72) !important;
+  background-image: none !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  border-bottom: 1px solid var(--rf-border);
+  box-shadow: none !important;
+}
+.skinHeader.semiTransparent { background-color: rgba(10,10,15,.35) !important; }
+
+/* Server name button → gradient wordmark, Jellyfin icon hidden */
+.MuiToolbar-root .MuiButton-root[href="/"],
+.MuiToolbar-root a.MuiButton-root[href="/"] {
+  font-family: var(--rf-font-display) !important;
+  font-weight: 700 !important;
+  font-size: 1.15rem !important;
+  letter-spacing: -0.02em;
+  text-transform: none !important;
+  background: var(--rf-gradient);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.MuiToolbar-root .MuiButton-root[href="/"] .MuiButton-startIcon { display: none; }
+
+/* Optional image logo (set --rf-logo-url above) */
+.MuiToolbar-root .MuiButton-root[href="/"]::before,
+.pageTitleWithLogo.pageTitleWithDefaultLogo {
+  background-image: var(--rf-logo-url) !important;
+  background-repeat: no-repeat; background-size: contain; background-position: left center;
+}
+.MuiToolbar-root .MuiButton-root[href="/"]::before {
+  content: ''; display: none;
+  width: var(--rf-logo-width); height: var(--rf-logo-height);
+}
+
+/* Library tabs in the app bar */
+.MuiToolbar-root .MuiButton-root {
+  border-radius: var(--rf-radius-pill) !important;
+  text-transform: none !important;
+  font-family: var(--rf-font-body) !important;
+  font-weight: 500 !important;
+  color: var(--rf-text-muted);
+  transition: background .18s var(--rf-ease-out), color .18s var(--rf-ease-out);
+}
+.MuiToolbar-root .MuiButton-root:hover { background: rgba(255,255,255,.06); color: var(--rf-text); }
+.MuiToolbar-root .MuiButton-root[aria-current="page"],
+.MuiToolbar-root .MuiButton-root.Mui-selected {
+  background: var(--rf-accent-1-soft); color: var(--rf-text);
+}
+.MuiToolbar-root .MuiIconButton-root { color: var(--rf-text-muted); border-radius: var(--rf-radius-pill); }
+.MuiToolbar-root .MuiIconButton-root:hover { color: var(--rf-text); background: rgba(255,255,255,.06); }
+
+/* Legacy / TV header buttons */
+.headerButton { border-radius: var(--rf-radius-pill); color: var(--rf-text-muted); }
+.headerButton:hover, .headerButton:focus { background: rgba(255,255,255,.06); color: var(--rf-text); }
+.headerUserButtonRound { box-shadow: 0 0 0 2px var(--rf-accent-1); }
+
+/* Secondary tabs (library views) */
+.emby-tab-button {
+  color: var(--rf-text-muted) !important;
+  font-family: var(--rf-font-body); font-weight: 500;
+  border-radius: var(--rf-radius-pill);
+  transition: color .18s, background .18s;
+}
+.emby-tab-button:hover { color: var(--rf-text) !important; background: rgba(255,255,255,.05); }
+.emby-tab-button-active {
+  color: var(--rf-text) !important;
+  background: var(--rf-accent-1-soft) !important;
+}
+.emby-tab-button-active::after,
+.emby-tab-button.show-focus:focus::after { display: none; }
+.MuiTabs-indicator { background: var(--rf-gradient) !important; height: 3px; border-radius: 3px 3px 0 0; }
+.MuiTab-root { text-transform: none !important; font-weight: 500; color: var(--rf-text-muted); }
+.MuiTab-root.Mui-selected { color: var(--rf-text) !important; }
+
+/* ------------------------------------------------------------
+   5. DRAWER / NAV
+   ------------------------------------------------------------ */
+.MuiDrawer-paper, .mainDrawer {
+  background: var(--rf-surface) !important;
+  background-image: none !important;
+  border-right: 1px solid var(--rf-border);
+}
+.MuiListItemButton-root { border-radius: var(--rf-radius-sm); margin: 2px 8px; color: var(--rf-text-muted); }
+.MuiListItemButton-root:hover { background: rgba(255,255,255,.05) !important; color: var(--rf-text); }
+.MuiListItemButton-root.Mui-selected {
+  background: var(--rf-accent-1-soft) !important; color: var(--rf-text);
+  box-shadow: inset 3px 0 0 var(--rf-accent-1);
+}
+.MuiListItemButton-root.Mui-selected .MuiListItemIcon-root { color: var(--rf-accent-1); }
+.navMenuOption { border-radius: var(--rf-radius-sm); margin: 2px 8px; color: var(--rf-text-muted); }
+.navMenuOption:hover { background: rgba(255,255,255,.05) !important; color: var(--rf-text); }
+.navMenuOption-selected {
+  background: var(--rf-accent-1-soft) !important; color: var(--rf-text) !important;
+  box-shadow: inset 3px 0 0 var(--rf-accent-1);
+}
+.navMenuOption-selected .navMenuOptionIcon { color: var(--rf-accent-1); }
+
+/* ------------------------------------------------------------
+   6. HOME SECTIONS
+   ------------------------------------------------------------ */
+.sectionTitle {
+  font-size: 1.35em; color: var(--rf-text);
+  padding-left: .55em; position: relative;
+}
+.sectionTitle::before {
+  content: ''; position: absolute; left: 0; top: .2em; bottom: .2em; width: 3px;
+  border-radius: 3px; background: var(--rf-gradient);
+}
+.sectionTitle-cards { margin-bottom: .35em; }
+.sectionTitleTextButton { color: var(--rf-text) !important; }
+.sectionTitleTextButton .material-icons { color: var(--rf-accent-1); transition: transform .2s var(--rf-ease-snap); }
+.sectionTitleTextButton:hover .material-icons { transform: translateX(4px); }
+.emby-scrollbuttons-button { color: var(--rf-text-muted); border-radius: var(--rf-radius-pill); }
+.emby-scrollbuttons-button:hover { color: var(--rf-text); background: rgba(255,255,255,.06); }
+
+/* "My Media" as buttons */
+.homeLibraryButton {
+  background: var(--rf-surface-elevated) !important;
+  border: 1px solid var(--rf-border) !important;
+  border-radius: var(--rf-radius-md) !important;
+  color: var(--rf-text) !important;
+  transition: transform .2s var(--rf-ease-out), border-color .2s, box-shadow .2s;
+}
+.homeLibraryButton:hover, .homeLibraryButton:focus {
+  transform: translateY(-2px);
+  border-color: var(--rf-accent-1) !important;
+  box-shadow: 0 0 24px var(--rf-accent-1-glow);
+}
+.homeLibraryIcon { color: var(--rf-accent-1); }
+
+/* ------------------------------------------------------------
+   7. CARDS / POSTERS
+   ------------------------------------------------------------ */
+.cardBox, .cardImageContainer, .cardScalable, .cardPadder {
+  border-radius: var(--jf-card-borderRadius) !important;
+}
+.cardBox:not(.visualCardBox) .cardPadder,
+.visualCardBox { background: var(--rf-surface-elevated) !important; }
+.visualCardBox { border: 1px solid var(--rf-border); box-shadow: var(--rf-shadow-md); }
+.cardText { font-family: var(--rf-font-body); }
+.cardText-first { font-weight: 500; color: var(--rf-text); }
+.cardText-secondary { color: var(--rf-text-dim) !important; }
+
+/* Desktop hover: lift + warm glow */
+.card-hoverable .cardBox {
+  transition: transform .25s var(--rf-ease-out), box-shadow .25s var(--rf-ease-out) !important;
+}
+.card-hoverable:hover .cardBox,
+.card-hoverable:focus-within .cardBox {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 0 0 1px var(--rf-accent-1), 0 12px 32px rgba(0,0,0,.6), 0 0 28px var(--rf-accent-1-glow);
+  z-index: 2;
+}
+.cardOverlayContainer {
+  background: linear-gradient(180deg, rgba(10,10,15,0) 20%, rgba(10,10,15,.85) 100%) !important;
+  border-radius: var(--jf-card-borderRadius);
+}
+.cardOverlayContainer > .cardOverlayFab-primary {
+  background: var(--rf-gradient) !important;
+  color: var(--rf-bg) !important;
+  box-shadow: 0 6px 20px var(--rf-accent-1-glow);
+}
+.cardOverlayContainer > .cardOverlayFab-primary:hover { transform: scale(1.1); }
+.cardOverlayButton-hover { color: var(--rf-text); }
+.cardOverlayButton-hover:hover { color: var(--rf-accent-1); }
+
+/* TV focus */
+.card:focus .cardBox.visualCardBox,
+.card:focus .cardBox:not(.visualCardBox) .cardScalable {
+  border-color: var(--rf-accent-1) !important;
+  box-shadow: 0 0 0 2px var(--rf-accent-1), 0 0 32px var(--rf-accent-1-glow);
+}
+.card.show-animation:focus > .cardBox {
+  box-shadow: 0 0 0 2px var(--rf-accent-1), 0 0 32px var(--rf-accent-1-glow);
+}
+
+/* Indicators + progress */
+.playedIndicator {
+  background: var(--rf-accent-1) !important; color: var(--rf-bg) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+.countIndicator { background: var(--rf-accent-2) !important; color: #fff !important; }
+.itemProgressBar { background: rgba(255,255,255,.14) !important; border-radius: var(--rf-radius-pill); overflow: hidden; }
+.itemProgressBarForeground { background: var(--rf-gradient) !important; }
+.itemProgressBarForeground-recording { background: var(--rf-accent-2) !important; }
+.itemLinearProgress { background: rgba(255,255,255,.14) !important; border-radius: var(--rf-radius-pill); }
+.itemLinearProgress .MuiLinearProgress-bar { background: var(--rf-gradient) !important; }
+
+/* ------------------------------------------------------------
+   8. BUTTONS
+   ------------------------------------------------------------ */
+.emby-button { font-family: var(--rf-font-body); font-weight: 600; letter-spacing: .01em; }
+.raised, .fab, a[data-role="button"] {
+  background: var(--rf-surface-elevated) !important;
+  color: var(--rf-text) !important;
+  border: 1px solid var(--rf-border) !important;
+  border-radius: var(--rf-radius-pill) !important;
+  transition: transform .18s var(--rf-ease-out), background .18s, border-color .18s, box-shadow .18s;
+}
+.raised:hover, .fab:hover { background: #22222f !important; border-color: var(--rf-border-strong) !important; transform: translateY(-1px); }
+.raised:focus, .fab:focus { border-color: var(--rf-accent-1) !important; box-shadow: 0 0 0 3px var(--rf-accent-1-soft); background: var(--rf-surface-elevated) !important; }
+
+.button-submit, .button-submit.raised, .MuiButton-contained, .MuiButton-containedPrimary {
+  background: var(--rf-gradient) !important;
+  color: var(--rf-bg) !important;
+  border: none !important;
+  border-radius: var(--rf-radius-pill) !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  box-shadow: 0 6px 20px var(--rf-accent-1-glow);
+}
+.button-submit:hover, .MuiButton-contained:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 10px 26px var(--rf-accent-1-glow); }
+.button-submit:focus { box-shadow: 0 0 0 3px var(--rf-accent-2-soft), 0 6px 20px var(--rf-accent-1-glow); color: var(--rf-bg) !important; }
+.button-delete { background: #f87171 !important; color: var(--rf-bg) !important; border-radius: var(--rf-radius-pill) !important; }
+.MuiButton-root { border-radius: var(--rf-radius-pill) !important; text-transform: none !important; }
+.MuiButton-outlined { border-color: var(--rf-border-strong) !important; color: var(--rf-text) !important; }
+.MuiButton-outlined:hover { border-color: var(--rf-accent-1) !important; background: var(--rf-accent-1-soft) !important; }
+
+.paper-icon-button-light { border-radius: var(--rf-radius-pill); transition: background .18s, color .18s; }
+.paper-icon-button-light:hover, .paper-icon-button-light:focus { background: var(--rf-accent-1-soft) !important; color: var(--rf-accent-1) !important; }
+.buttonActive, .playstatebutton-played .playstatebutton-icon-played { color: var(--rf-accent-1) !important; }
+.ratingbutton-withrating .ratingbutton-icon-withrating { color: var(--rf-accent-2) !important; }
+
+/* ------------------------------------------------------------
+   9. INPUTS
+   ------------------------------------------------------------ */
+.emby-input, .emby-textarea, .emby-select-withcolor {
+  background: var(--rf-surface) !important;
+  color: var(--rf-text) !important;
+  border: 1px solid var(--rf-border-strong) !important;
+  border-radius: var(--rf-radius-sm) !important;
+  font-family: var(--rf-font-body);
+  transition: border-color .18s, box-shadow .18s;
+}
+.emby-input:focus, .emby-textarea:focus, .emby-select-withcolor:focus {
+  border-color: var(--rf-accent-1) !important;
+  box-shadow: 0 0 0 3px var(--rf-accent-1-soft);
+  outline: none;
+}
+.emby-select-withcolor > option { background: var(--rf-surface-elevated); color: var(--rf-text); }
+.inputLabel, .selectLabel, .checkboxLabel { color: var(--rf-text-muted); font-family: var(--rf-font-body); }
+.inputLabelFocused, .selectLabelFocused { color: var(--rf-accent-1) !important; }
+.selectArrow { color: var(--rf-text-muted); }
+
+.checkboxOutline { border: 2px solid var(--rf-border-strong) !important; border-radius: 6px; background: var(--rf-surface) !important; transition: all .18s; }
+.emby-checkbox:checked + span + .checkboxOutline {
+  background: var(--rf-gradient) !important; border-color: transparent !important;
+  box-shadow: 0 0 12px var(--rf-accent-1-glow);
+}
+.emby-checkbox:checked + span + .checkboxOutline .checkboxIcon { color: var(--rf-bg) !important; }
+.emby-checkbox:focus + span + .checkboxOutline { box-shadow: 0 0 0 3px var(--rf-accent-1-soft); }
+
+.MuiOutlinedInput-root { border-radius: var(--rf-radius-sm) !important; background: var(--rf-surface); }
+.MuiOutlinedInput-notchedOutline { border-color: var(--rf-border-strong) !important; }
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: var(--rf-accent-1) !important; box-shadow: 0 0 0 3px var(--rf-accent-1-soft); }
+.MuiInputLabel-root.Mui-focused { color: var(--rf-accent-1) !important; }
+.MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track { background: var(--rf-accent-1) !important; opacity: .6 !important; }
+.MuiSwitch-switchBase.Mui-checked .MuiSwitch-thumb { background: var(--rf-accent-1); }
+.mdl-switch.is-checked .mdl-switch__track { background: var(--rf-accent-1-glow) !important; }
+.mdl-switch.is-checked .mdl-switch__thumb { background: var(--rf-accent-1) !important; }
+
+/* Sliders (settings + player position + volume) */
+.mdl-slider-background-flex { background: rgba(255,255,255,.16) !important; border-radius: var(--rf-radius-pill); }
+.mdl-slider-background-lower { background: var(--rf-gradient-flow) !important; background-size: 300% 100%; }
+.mdl-slider-background-upper { background: transparent !important; }
+.mdl-slider::-webkit-slider-thumb { background: var(--rf-accent-1) !important; box-shadow: 0 0 0 3px rgba(10,10,15,.8), 0 0 14px var(--rf-accent-1-glow) !important; }
+.mdl-slider::-moz-range-thumb { background: var(--rf-accent-1) !important; box-shadow: 0 0 0 3px rgba(10,10,15,.8), 0 0 14px var(--rf-accent-1-glow) !important; }
+.sliderBubble { background: var(--rf-surface-elevated) !important; border: 1px solid var(--rf-accent-1); border-radius: var(--rf-radius-sm); color: var(--rf-text); }
+.sliderMarker.watched { background: var(--rf-accent-1); }
+.sliderMarker.unwatched { background: var(--rf-accent-2); }
+.MuiSlider-root { color: var(--rf-accent-1) !important; }
+.MuiSlider-track { background: var(--rf-gradient) !important; border: none !important; }
+
+/* ------------------------------------------------------------
+   10. LOGIN PAGE
+   ------------------------------------------------------------ */
+#loginPage .manualLoginForm,
+#loginPage .visualLoginForm {
+  background: var(--rf-surface-glass);
+  border: 1px solid var(--rf-border);
+  border-radius: var(--rf-radius-lg);
+  padding: 2em 2em 1.5em;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--rf-shadow-lg), 0 0 60px rgba(245,158,11,.08);
+  animation: rf-pop .5s var(--rf-ease-snap) both;
+}
+#loginPage .sectionTitle { font-size: 1.7em; margin-top: 0; }
+#loginPage .sectionTitle::before { display: none; }
+#loginPage .btnManual, #loginPage .btnForgotPassword, #loginPage .btnQuick, #loginPage .btnSelectServer, #loginPage .btnCancel {
+  background: transparent !important;
+  border: 1px solid var(--rf-border-strong) !important;
+  color: var(--rf-text) !important;
+}
+#loginPage .btnManual:hover, #loginPage .btnForgotPassword:hover, #loginPage .btnSelectServer:hover {
+  background: rgba(255,255,255,.06) !important; border-color: var(--rf-accent-1) !important;
+}
+#loginPage .squareCard .cardBox { border-radius: var(--rf-radius-md) !important; }
+#loginPage .squareCard .cardImage, #loginPage .squareCard .cardImageContainer { border-radius: var(--rf-radius-md) !important; }
+#loginPage .squareCard:hover .cardBox, #loginPage .squareCard:focus .cardBox {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 0 0 2px var(--rf-accent-1), 0 0 30px var(--rf-accent-1-glow);
+}
+#loginPage .cardImageIcon.person { color: var(--rf-accent-1); }
+.loginDisclaimer { color: var(--rf-text-dim); font-size: .9em; }
+.loginDisclaimer a { color: var(--rf-accent-1); }
+
+/* ------------------------------------------------------------
+   11. ITEM DETAIL PAGE
+   ------------------------------------------------------------ */
+.itemBackdrop { filter: brightness(.7) saturate(1.05); }
+.itemBackdrop::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,15,.1) 0%, rgba(10,10,15,.6) 70%, var(--rf-bg) 100%);
+}
+.detailRibbon {
+  background: rgba(10,10,15,.55) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--rf-border);
+}
+.itemName { font-size: 2.2em; line-height: 1.1; }
+.parentName, .musicParentName { color: var(--rf-text-muted); font-family: var(--rf-font-body); }
+.tagline { color: var(--rf-accent-1); font-style: normal; font-weight: 500; }
+.mediaInfoItem, .mediaInfoText {
+  background: rgba(255,255,255,.06); border: 1px solid var(--rf-border);
+  border-radius: var(--rf-radius-pill); padding: .15em .7em; font-size: .9em;
+}
+.mediaInfoText.mediaInfoCriticRating, .starRatingContainer { background: transparent; border: none; }
+.detailImageContainer .cardBox, .detailImageContainer img { border-radius: var(--rf-radius-md) !important; box-shadow: var(--rf-shadow-lg); }
+
+.mainDetailButtons .detailButton {
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--rf-border-strong) !important;
+  border-radius: var(--rf-radius-pill) !important;
+  color: var(--rf-text) !important;
+  margin-right: .5em;
+  transition: all .18s var(--rf-ease-out);
+}
+.mainDetailButtons .detailButton:hover, .mainDetailButtons .detailButton:focus {
+  background: rgba(255,255,255,.1) !important; border-color: var(--rf-accent-1) !important; transform: translateY(-1px);
+}
+.mainDetailButtons .btnPlay, .mainDetailButtons .btnReplay {
+  background: var(--rf-gradient) !important; border: none !important; color: var(--rf-bg) !important;
+  box-shadow: 0 6px 20px var(--rf-accent-1-glow); padding-left: 1.2em; padding-right: 1.4em;
+}
+.mainDetailButtons .btnPlay:hover { filter: brightness(1.08); box-shadow: 0 10px 28px var(--rf-accent-1-glow); }
+.mainDetailButtons .btnPlay .detailButton-icon { color: var(--rf-bg); }
+.detailTrackSelect { border-radius: var(--rf-radius-sm) !important; }
+.itemExternalLinks a, .itemGenres a { color: var(--rf-accent-1); }
+
+/* ------------------------------------------------------------
+   12. VIDEO PLAYER OSD
+   ------------------------------------------------------------ */
+.skinHeader.osdHeader, .videoOsd-appBar {
+  background: linear-gradient(180deg, rgba(10,10,15,.8) 0%, rgba(10,10,15,0) 100%) !important;
+  -webkit-backdrop-filter: none; backdrop-filter: none; border: none;
+}
+.videoOsdBottom {
+  background: linear-gradient(0deg, rgba(10,10,15,.92) 0%, rgba(10,10,15,.6) 55%, rgba(10,10,15,0) 100%) !important;
+  padding-top: 3em;
+}
+.osdTitle { font-size: 1.5em; }
+.osdMediaStatus, .osdSecondaryMediaInfo, .osdTimeText, .endsAtText { color: var(--rf-text-muted); font-family: var(--rf-font-body); }
+.videoOsdBottom .mdl-slider-background-flex { height: .35em; }
+.videoOsdBottom .mdl-slider:hover ~ .mdl-slider-background-flex-container .mdl-slider-background-flex { height: .5em; }
+.chapterThumbContainer { border-radius: var(--rf-radius-sm); overflow: hidden; border: 1px solid var(--rf-accent-1); box-shadow: 0 0 20px var(--rf-accent-1-glow); }
+.chapterThumbText { background: rgba(10,10,15,.8); color: var(--rf-text); }
+.videoOsdBottom .paper-icon-button-light { color: var(--rf-text); }
+.videoOsdBottom .paper-icon-button-light:hover, .videoOsdBottom .paper-icon-button-light:focus { background: var(--rf-accent-1-soft) !important; color: var(--rf-accent-1) !important; }
+.videoOsdBottom .btnPause {
+  background: var(--rf-gradient) !important; color: var(--rf-bg) !important;
+  box-shadow: 0 6px 20px var(--rf-accent-1-glow);
+}
+.videoOsdBottom .btnPause:hover, .videoOsdBottom .btnPause:focus { filter: brightness(1.08); transform: scale(1.06); }
+
+/* ------------------------------------------------------------
+   13. SKIP BUTTON (native media segments / Intro Skipper)
+   ------------------------------------------------------------ */
+@keyframes rf-flow  { to { background-position: 0 0, 0 0, 300% 50%; } }
+@keyframes rf-sheen { 0%, 70% { background-position: -150% 0, 0 0, 0% 50%; }
+                      100%    { background-position: 250% 0, 0 0, 300% 50%; } }
+@keyframes rf-pop   { from { opacity: 0; transform: translateY(14px) scale(.94); }
+                      to   { opacity: 1; transform: none; } }
+@keyframes rf-pulse { 0%, 100% { box-shadow: 0 0 14px var(--rf-accent-1-glow), 0 6px 24px rgba(0,0,0,.55); }
+                      50%      { box-shadow: 0 0 28px var(--rf-accent-2-glow), 0 6px 24px rgba(0,0,0,.55); } }
+
+.skip-button,
+#skipIntro .emby-button,
+.skipIntro .btnSkipIntro {
+  font-family: var(--rf-font-display) !important;
+  color: var(--rf-text) !important;
+  border: 2px solid transparent !important;
+  border-radius: var(--rf-radius-pill) !important;
+  padding: .7em 1.6em !important;
+  font-weight: 700 !important;
+  font-size: 1.05em !important;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0,0,0,.6);
+  background:
+    linear-gradient(110deg, transparent 35%, rgba(255,255,255,.18) 50%, transparent 65%) padding-box,
+    linear-gradient(rgba(10,10,15,.72), rgba(10,10,15,.72)) padding-box,
+    var(--rf-gradient-flow) border-box !important;
+  background-size: 250% 100%, 100% 100%, 300% 100% !important;
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+  animation: rf-pop .45s var(--rf-ease-snap) both, rf-flow 6s linear infinite,
+             rf-sheen 4.5s ease-in-out 1s infinite, rf-pulse 3s ease-in-out infinite;
+  transition: transform .25s var(--rf-ease-out), filter .25s;
+}
+.skip-button.skip-button-hidden { animation: none; }
+.skip-button:hover, .skip-button:focus,
+#skipIntro .emby-button:hover, #skipIntro .emby-button:focus,
+.skipIntro .btnSkipIntro:hover, .skipIntro .btnSkipIntro:focus {
+  transform: translateY(-2px) scale(1.07); filter: brightness(1.15); outline: none;
+}
+.skip-button .material-icons, #skipIntro .material-icons, .skipIntro .material-icons {
+  color: var(--rf-accent-1) !important; transition: transform .25s var(--rf-ease-snap);
+}
+.skip-button:hover .material-icons, .skip-button:focus .material-icons { transform: translateX(4px); }
+
+/* ------------------------------------------------------------
+   14. UP NEXT CARD
+   ------------------------------------------------------------ */
+.upNextContainer, .upNextDialog {
+  background:
+    linear-gradient(rgba(12, 10, 18, .92), rgba(12, 10, 18, .92)) padding-box,
+    var(--rf-gradient-flow) border-box !important;
+  background-size: 100% 100%, 300% 100% !important;
+  border: 2px solid transparent !important;
+  border-radius: var(--rf-radius-lg) !important;
+  padding: 1.2em 1.4em !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 0 24px var(--rf-accent-1-glow), var(--rf-shadow-lg) !important;
+  animation: rf-pop .45s var(--rf-ease-snap) both, rf-card-flow 6s linear infinite;
+}
+@keyframes rf-card-flow { to { background-position: 0 0, 300% 50%; } }
+.upNextDialog-hidden { animation: none; }
+.upNextDialog-nextVideoText { color: var(--rf-text-muted); font-family: var(--rf-font-body); font-weight: 500; font-size: .9em; text-transform: uppercase; letter-spacing: .08em; }
+.upNextDialog-title { font-size: 1.3em; }
+.upNextDialog-mediainfo { color: var(--rf-text-muted); }
+.upNextDialog-countdownText {
+  background: var(--rf-gradient); -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; font-weight: 700 !important; letter-spacing: .06em; text-transform: uppercase; font-size: .85em;
+}
+.upNextDialog-button {
+  border-radius: var(--rf-radius-pill) !important; font-weight: 700 !important;
+  text-transform: uppercase; letter-spacing: .08em; font-family: var(--rf-font-display);
+  transition: transform .2s var(--rf-ease-out), filter .2s;
+}
+.upNextDialog-button:hover, .upNextDialog-button:focus { transform: translateY(-2px) scale(1.05); filter: brightness(1.12); outline: none; }
+.upNextDialog .btnStartNow {
+  background: var(--rf-gradient) !important; color: var(--rf-bg) !important; border: none !important;
+  box-shadow: 0 6px 20px var(--rf-accent-1-glow);
+}
+.upNextDialog .btnHide {
+  background: rgba(255,255,255,.06) !important; color: var(--rf-text) !important;
+  border: 1px solid var(--rf-border-strong) !important;
+}
+
+/* ------------------------------------------------------------
+   15. DIALOGS, MENUS, TOASTS, LISTS
+   ------------------------------------------------------------ */
+.dialog {
+  background: var(--rf-surface) !important;
+  border: 1px solid var(--rf-border);
+  border-radius: var(--rf-radius-lg) !important;
+  box-shadow: var(--rf-shadow-lg) !important;
+}
+.dialogBackdrop { background: rgba(5,5,9,.7) !important; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.dialogBackdropOpened { opacity: 1 !important; }
+.formDialogHeader:not(.formDialogHeader-clear), .formDialogFooter:not(.formDialogFooter-clear) {
+  background: transparent !important;
+}
+.formDialogHeader { border-bottom: 1px solid var(--rf-border); }
+.formDialogFooter { border-top: 1px solid var(--rf-border); }
+
+.actionSheet {
+  background: var(--rf-surface-glass) !important;
+  border: 1px solid var(--rf-border);
+  border-radius: var(--rf-radius-md) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--rf-shadow-lg);
+}
+.actionSheetMenuItem { border-radius: var(--rf-radius-sm); margin: 2px 6px; }
+.actionSheetMenuItem:hover, .actionSheetMenuItem:focus { background: var(--rf-accent-1-soft) !important; }
+.actionsheetMenuItemIcon { color: var(--rf-text-muted); }
+.actionSheetMenuItem:hover .actionsheetMenuItemIcon { color: var(--rf-accent-1); }
+
+.MuiPaper-root.MuiMenu-paper, .MuiPopover-paper, .MuiPaper-root.MuiDialog-paper {
+  background: var(--rf-surface-elevated) !important; background-image: none !important;
+  border: 1px solid var(--rf-border); border-radius: var(--rf-radius-md) !important;
+  box-shadow: var(--rf-shadow-lg) !important;
+}
+.MuiMenuItem-root { border-radius: var(--rf-radius-sm); margin: 2px 6px; }
+.MuiMenuItem-root:hover, .MuiMenuItem-root.Mui-focusVisible { background: var(--rf-accent-1-soft) !important; }
+.MuiMenuItem-root.Mui-selected { background: var(--rf-accent-1-soft) !important; color: var(--rf-text); }
+.MuiChip-root { border-radius: var(--rf-radius-pill); background: rgba(255,255,255,.06); border: 1px solid var(--rf-border); }
+.MuiTooltip-tooltip { background: var(--rf-surface-elevated) !important; border: 1px solid var(--rf-border); border-radius: var(--rf-radius-sm); font-family: var(--rf-font-body); }
+
+.toast {
+  background: var(--rf-surface-glass) !important;
+  color: var(--rf-text) !important;
+  border: 1px solid var(--rf-border);
+  border-left: 3px solid var(--rf-accent-1);
+  border-radius: var(--rf-radius-sm) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: var(--rf-shadow-md);
+  font-family: var(--rf-font-body);
+}
+.MuiSnackbarContent-root { border-left: 3px solid var(--rf-accent-1); border-radius: var(--rf-radius-sm) !important; }
+.MuiAlert-root { border-radius: var(--rf-radius-sm) !important; }
+
+.paperList, .visualCardBox .cardFooter, .collapseContent {
+  background: var(--rf-surface) !important;
+  border: 1px solid var(--rf-border);
+  border-radius: var(--rf-radius-md) !important;
+}
+.listItem { border-radius: var(--rf-radius-sm); transition: background .15s; }
+.listItem:hover { background: rgba(255,255,255,.05) !important; }
+.listItem:focus { background: var(--rf-accent-1-soft) !important; }
+.listItem-border { border-color: var(--rf-border) !important; }
+.listItem .secondary { color: var(--rf-text-dim) !important; }
+.listItemProgressBar { background: var(--rf-gradient); }
+.listItemImage { border-radius: 6px; }
+.paperListLabel, .listItemBodyText { font-family: var(--rf-font-body); }
+
+/* Dashboard / settings cards */
+.MuiCard-root { background: var(--rf-surface) !important; background-image: none !important; border: 1px solid var(--rf-border); border-radius: var(--rf-radius-md) !important; }
+.MuiTableCell-root { border-color: var(--rf-border) !important; }
+.MuiTableRow-root:hover { background: rgba(255,255,255,.04); }
+a { color: var(--rf-accent-1); }
+a:hover { color: #fbbf24; }
+
+/* ------------------------------------------------------------
+   16. PERFORMANCE / ACCESSIBILITY
+   ------------------------------------------------------------ */
+/* TV browsers (Tizen) struggle with blur + looping animation */
+.layout-tv .MuiAppBar-root, .layout-tv .skinHeader-withBackground,
+.layout-tv .skip-button, .layout-tv .upNextContainer, .layout-tv .actionSheet,
+.layout-tv .toast, .layout-tv .detailRibbon, .layout-tv #loginPage .manualLoginForm,
+.layout-tv #loginPage .visualLoginForm, .layout-tv .dialogBackdrop {
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.layout-tv .skip-button { animation: rf-pop .45s var(--rf-ease-snap) both, rf-flow 6s linear infinite; }
+.layout-tv .upNextContainer { animation: rf-pop .45s var(--rf-ease-snap) both; }
+.layout-tv .backgroundContainer { background-attachment: scroll; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
