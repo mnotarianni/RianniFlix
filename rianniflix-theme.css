@@ -119,18 +119,14 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   background-image: var(--jf-palette-background-defaultImage) !important;
   background-attachment: fixed;
 }
-.backgroundContainer.withBackdrop { opacity: 0.88; }
-
-/* Backdrop images: deepen + warm tint so posters pop */
-.backdropImage {
-  filter: saturate(1.05) brightness(0.55);
-}
+/* Jellyfin covers backdrops with this container at .86 opacity by default.
+   Ease it off so backdrops read through, with a soft fade into the page bottom. */
+.backgroundContainer.withBackdrop { opacity: 0.72; }
+.backdropImage { filter: saturate(1.05); }
 .backdropContainer::after {
   content: '';
   position: absolute; inset: 0;
-  background:
-    linear-gradient(180deg, rgba(10,10,15,.35) 0%, rgba(10,10,15,.65) 60%, var(--rf-bg) 100%),
-    var(--rf-gradient-soft);
+  background: linear-gradient(180deg, rgba(10,10,15,0) 0%, rgba(10,10,15,.25) 55%, var(--rf-bg) 100%);
   pointer-events: none;
 }
 
@@ -161,15 +157,19 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 }
 .skinHeader.semiTransparent { background-color: rgba(10,10,15,.35) !important; }
 
-/* Server name button → Rianni Flix logo image. Jellyfin icon + text hidden. */
-.MuiToolbar-root .MuiButton-root[href="/"],
+/* Server name button → Rianni Flix logo image. Jellyfin icon + text hidden.
+   Jellyfin uses a hash router, so the home link is href="#/" (kept "/" for safety). */
+.MuiToolbar-root a.MuiButton-root[href="#/"],
 .MuiToolbar-root a.MuiButton-root[href="/"] {
-  font-size: 0 !important;            /* hides the "Rianni Flix" text node */
+  font-size: 0 !important;            /* hides the server-name text node */
   padding: 6px 10px !important;
+  margin-right: 6px;
   background: none !important;
 }
-.MuiToolbar-root .MuiButton-root[href="/"] .MuiButton-startIcon { display: none; }
-.MuiToolbar-root .MuiButton-root[href="/"]::before {
+.MuiToolbar-root a.MuiButton-root[href="#/"] .MuiButton-startIcon,
+.MuiToolbar-root a.MuiButton-root[href="/"] .MuiButton-startIcon { display: none; }
+.MuiToolbar-root a.MuiButton-root[href="#/"]::before,
+.MuiToolbar-root a.MuiButton-root[href="/"]::before {
   content: '';
   display: inline-block;
   width: var(--rf-logo-width);
@@ -177,7 +177,8 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   background: var(--rf-logo-url) no-repeat left center / contain;
   transition: filter .2s var(--rf-ease-out), transform .2s var(--rf-ease-out);
 }
-.MuiToolbar-root .MuiButton-root[href="/"]:hover::before {
+.MuiToolbar-root a.MuiButton-root[href="#/"]:hover::before,
+.MuiToolbar-root a.MuiButton-root[href="/"]:hover::before {
   filter: drop-shadow(0 0 10px var(--rf-accent-1-glow));
   transform: translateY(-1px);
 }
@@ -203,10 +204,15 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   transition: background .18s var(--rf-ease-out), color .18s var(--rf-ease-out);
 }
 .MuiToolbar-root .MuiButton-root:hover { background: rgba(255,255,255,.06); color: var(--rf-text); }
+/* Active library: Jellyfin switches the button to color="primary" */
+.MuiToolbar-root .MuiButton-root.MuiButton-colorPrimary,
 .MuiToolbar-root .MuiButton-root[aria-current="page"],
 .MuiToolbar-root .MuiButton-root.Mui-selected {
-  background: var(--rf-accent-1-soft); color: var(--rf-text);
+  background: var(--rf-accent-1-soft) !important;
+  color: var(--rf-text) !important;
+  box-shadow: inset 0 -2px 0 var(--rf-accent-1);
 }
+.MuiToolbar-root .MuiButton-root.MuiButton-colorPrimary .MuiButton-startIcon { color: var(--rf-accent-1); }
 .MuiToolbar-root .MuiIconButton-root { color: var(--rf-text-muted); border-radius: var(--rf-radius-pill); }
 .MuiToolbar-root .MuiIconButton-root:hover { color: var(--rf-text); background: rgba(255,255,255,.06); }
 
@@ -261,10 +267,11 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
    ------------------------------------------------------------ */
 .sectionTitle {
   font-size: 1.35em; color: var(--rf-text);
-  padding-left: .55em; position: relative;
 }
+/* Inline bar so it sits next to the text whatever padding Jellyfin adds (.padded-left) */
 .sectionTitle::before {
-  content: ''; position: absolute; left: 0; top: .2em; bottom: .2em; width: 3px;
+  content: ''; display: inline-block; vertical-align: -0.08em;
+  width: 3px; height: .85em; margin-right: .45em;
   border-radius: 3px; background: var(--rf-gradient);
 }
 .sectionTitle-cards { margin-bottom: .35em; }
@@ -309,9 +316,16 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 .card-hoverable:hover .cardBox,
 .card-hoverable:focus-within .cardBox {
   transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 0 0 1px var(--rf-accent-1), 0 12px 32px rgba(0,0,0,.6), 0 0 28px var(--rf-accent-1-glow);
   z-index: 2;
 }
+/* Glow hugs the image, not the text footer */
+.card-hoverable:hover .cardBox:not(.visualCardBox) .cardScalable,
+.card-hoverable:focus-within .cardBox:not(.visualCardBox) .cardScalable,
+.card-hoverable:hover .cardBox.visualCardBox,
+.card-hoverable:focus-within .cardBox.visualCardBox {
+  box-shadow: 0 0 0 1px var(--rf-accent-1), 0 12px 32px rgba(0,0,0,.6), 0 0 28px var(--rf-accent-1-glow);
+}
+.cardScalable { transition: box-shadow .25s var(--rf-ease-out); }
 .cardOverlayContainer {
   background: linear-gradient(180deg, rgba(10,10,15,0) 20%, rgba(10,10,15,.85) 100%) !important;
   border-radius: var(--jf-card-borderRadius);
@@ -473,10 +487,10 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 /* ------------------------------------------------------------
    11. ITEM DETAIL PAGE
    ------------------------------------------------------------ */
-.itemBackdrop { filter: brightness(.7) saturate(1.05); }
+.itemBackdrop { filter: saturate(1.05); }
 .itemBackdrop::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(10,10,15,.1) 0%, rgba(10,10,15,.6) 70%, var(--rf-bg) 100%);
+  background: linear-gradient(180deg, rgba(10,10,15,0) 0%, rgba(10,10,15,.45) 70%, var(--rf-bg) 100%);
 }
 .detailRibbon {
   background: rgba(10,10,15,.55) !important;
@@ -510,7 +524,14 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 }
 .mainDetailButtons .btnPlay:hover { filter: brightness(1.08); box-shadow: 0 10px 28px var(--rf-accent-1-glow); }
 .mainDetailButtons .btnPlay .detailButton-icon { color: var(--rf-bg); }
-.detailTrackSelect { border-radius: var(--rf-radius-sm) !important; }
+.detailTrackSelect { border-radius: var(--rf-radius-sm) !important; padding: .25em 2em .25em .7em !important; }
+
+/* Loading spinners (hard-coded blue in Jellyfin) */
+.mdl-spinner__layer-1, .mdl-spinner__layer-2, .mdl-spinner__layer-3, .mdl-spinner__layer-4 {
+  border-color: var(--rf-accent-1) !important;
+}
+.mdl-spinner__layer-2, .mdl-spinner__layer-4 { border-color: var(--rf-accent-2) !important; }
+.MuiCircularProgress-root { color: var(--rf-accent-1) !important; }
 .itemExternalLinks a, .itemGenres a { color: var(--rf-accent-1); }
 
 /* ------------------------------------------------------------
