@@ -326,9 +326,15 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   box-shadow: 0 0 0 1px var(--rf-accent-1), 0 12px 32px rgba(0,0,0,.6), 0 0 28px var(--rf-accent-1-glow);
 }
 .cardScalable { transition: box-shadow .25s var(--rf-ease-out); }
+/* Jellyfin dims the whole tile on hover; keep the art visible and only fade the bottom
+   strip behind the play / menu buttons (TV focus never shows this overlay). */
 .cardOverlayContainer {
-  background: linear-gradient(180deg, rgba(10,10,15,0) 20%, rgba(10,10,15,.85) 100%) !important;
+  background: linear-gradient(180deg, rgba(10,10,15,0) 55%, rgba(10,10,15,.72) 100%) !important;
   border-radius: var(--jf-card-borderRadius);
+}
+.cardOverlayContainer .cardOverlayButton-hover,
+.cardOverlayContainer .btnCardOptions {
+  background: rgba(10,10,15,.55); border-radius: var(--rf-radius-pill);
 }
 .cardOverlayContainer > .cardOverlayFab-primary {
   background: var(--rf-gradient) !important;
