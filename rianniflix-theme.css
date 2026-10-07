@@ -497,8 +497,12 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--rf-border);
 }
-.itemName { font-size: 2.2em; line-height: 1.1; }
-.parentName, .musicParentName { color: var(--rf-text-muted); font-family: var(--rf-font-body); }
+/* Keep Jellyfin's default title sizes: the title block is anchored to the bottom of the
+   backdrop ribbon and grows upward into the logo if the text gets bigger. */
+.itemName { line-height: 1.15; }
+.itemName.subtitle { font-weight: 500 !important; }
+.parentName:not(.musicParentName) { font-family: var(--rf-font-display) !important; }
+.musicParentName { color: var(--rf-text-muted); font-family: var(--rf-font-body); }
 .tagline { color: var(--rf-accent-1); font-style: normal; font-weight: 500; }
 .mediaInfoItem, .mediaInfoText {
   background: rgba(255,255,255,.06); border: 1px solid var(--rf-border);
@@ -516,14 +520,21 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   transition: all .18s var(--rf-ease-out);
 }
 .mainDetailButtons .detailButton:hover, .mainDetailButtons .detailButton:focus {
-  background: rgba(255,255,255,.1) !important; border-color: var(--rf-accent-1) !important; transform: translateY(-1px);
+  background: rgba(255,255,255,.16) !important; border-color: var(--rf-accent-1) !important;
+  color: var(--rf-text) !important; transform: translateY(-1px);
 }
-.mainDetailButtons .btnPlay, .mainDetailButtons .btnReplay {
+/* Play / Resume / Restart: gradient, and stay gradient on hover (brighten, don't darken) */
+.mainDetailButtons .btnPlay, .mainDetailButtons .btnReplay,
+.mainDetailButtons .btnPlay:hover, .mainDetailButtons .btnPlay:focus,
+.mainDetailButtons .btnReplay:hover, .mainDetailButtons .btnReplay:focus {
   background: var(--rf-gradient) !important; border: none !important; color: var(--rf-bg) !important;
-  box-shadow: 0 6px 20px var(--rf-accent-1-glow); padding-left: 1.2em; padding-right: 1.4em;
+  box-shadow: 0 6px 20px var(--rf-accent-1-glow);
 }
-.mainDetailButtons .btnPlay:hover { filter: brightness(1.08); box-shadow: 0 10px 28px var(--rf-accent-1-glow); }
-.mainDetailButtons .btnPlay .detailButton-icon { color: var(--rf-bg); }
+.mainDetailButtons .btnPlay:hover, .mainDetailButtons .btnPlay:focus,
+.mainDetailButtons .btnReplay:hover, .mainDetailButtons .btnReplay:focus {
+  filter: brightness(1.12); box-shadow: 0 10px 28px var(--rf-accent-1-glow); transform: translateY(-1px) scale(1.05);
+}
+.mainDetailButtons .btnPlay .detailButton-icon, .mainDetailButtons .btnReplay .detailButton-icon { color: var(--rf-bg) !important; }
 .detailTrackSelect { border-radius: var(--rf-radius-sm) !important; padding: .25em 2em .25em .7em !important; }
 
 /* Loading spinners (hard-coded blue in Jellyfin) */
