@@ -309,7 +309,10 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 .cardText-first { font-weight: 500; color: var(--rf-text); }
 .cardText-secondary { color: var(--rf-text-dim) !important; }
 
-/* Desktop hover: lift + warm glow */
+/* Desktop hover: lift + warm glow.
+   Jellyfin sets `contain: paint` on cards and `margin-left: 0` on the first box in a
+   scroller, which clips the ring on the left. Lift the paint containment on hover cards. */
+.card-hoverable { contain: layout style !important; }
 .card-hoverable .cardBox {
   transition: transform .25s var(--rf-ease-out), box-shadow .25s var(--rf-ease-out) !important;
 }
