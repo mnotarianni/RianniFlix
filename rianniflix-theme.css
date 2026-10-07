@@ -614,18 +614,22 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   background-size: 250% 100%, 100% 100%, 300% 100% !important;
   -webkit-backdrop-filter: blur(10px) saturate(140%);
   backdrop-filter: blur(10px) saturate(140%);
-  animation: rf-pop .45s var(--rf-ease-snap) both, rf-flow 6s linear infinite,
-             rf-sheen 4.5s ease-in-out 1s infinite, rf-pulse 3s ease-in-out infinite;
-  transition: transform .25s var(--rf-ease-out), filter .25s;
+  /* Jellyfin hides this button by waiting for a transitionend on its opacity fade.
+     So: no opacity/transform animations with fill-mode, opacity is the ONLY transition,
+     and nothing inside it transitions (transitionend bubbles). */
+  animation: rf-flow 6s linear infinite, rf-sheen 4.5s ease-in-out 1s infinite,
+             rf-pulse 3s ease-in-out infinite;
+  transition: opacity 200ms ease-out !important;
 }
 .skip-button.skip-button-hidden { animation: none; }
+.skip-button *, #skipIntro *, .skipIntro * { transition: none !important; }
 .skip-button:hover, .skip-button:focus,
 #skipIntro .emby-button:hover, #skipIntro .emby-button:focus,
 .skipIntro .btnSkipIntro:hover, .skipIntro .btnSkipIntro:focus {
   transform: translateY(-2px) scale(1.07); filter: brightness(1.15); outline: none;
 }
 .skip-button .material-icons, #skipIntro .material-icons, .skipIntro .material-icons {
-  color: var(--rf-accent-1) !important; transition: transform .25s var(--rf-ease-snap);
+  color: var(--rf-accent-1) !important;
 }
 .skip-button:hover .material-icons, .skip-button:focus .material-icons { transform: translateX(4px); }
 
@@ -643,10 +647,15 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
   box-shadow: 0 0 24px var(--rf-accent-1-glow), var(--rf-shadow-lg) !important;
-  animation: rf-pop .45s var(--rf-ease-snap) both, rf-card-flow 6s linear infinite;
+  /* Same rule as the skip button: Jellyfin awaits transitionend on the opacity fade
+     before it hides the card and starts the next episode. Opacity is the only transition,
+     no fill-mode animations on opacity/transform, no transitions on children. */
+  animation: rf-card-flow 6s linear infinite;
+  transition: opacity 300ms ease-out !important;
 }
 @keyframes rf-card-flow { to { background-position: 0 0, 300% 50%; } }
 .upNextDialog-hidden { animation: none; }
+.upNextContainer *, .upNextDialog * { transition: none !important; }
 .upNextDialog-nextVideoText { color: var(--rf-text-muted); font-family: var(--rf-font-body); font-weight: 500; font-size: .9em; text-transform: uppercase; letter-spacing: .08em; }
 .upNextDialog-title { font-size: 1.3em; }
 .upNextDialog-mediainfo { color: var(--rf-text-muted); }
@@ -657,7 +666,6 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 .upNextDialog-button {
   border-radius: var(--rf-radius-pill) !important; font-weight: 700 !important;
   text-transform: uppercase; letter-spacing: .08em; font-family: var(--rf-font-display);
-  transition: transform .2s var(--rf-ease-out), filter .2s;
 }
 .upNextDialog-button:hover, .upNextDialog-button:focus { transform: translateY(-2px) scale(1.05); filter: brightness(1.12); outline: none; }
 .upNextDialog .btnStartNow {
@@ -753,10 +761,12 @@ a:hover { color: #fbbf24; }
 .layout-tv #loginPage .visualLoginForm, .layout-tv .dialogBackdrop {
   -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
 }
-.layout-tv .skip-button { animation: rf-pop .45s var(--rf-ease-snap) both, rf-flow 6s linear infinite; }
-.layout-tv .upNextContainer { animation: rf-pop .45s var(--rf-ease-snap) both; }
+.layout-tv .skip-button { animation: rf-flow 6s linear infinite; }
+.layout-tv .upNextContainer { animation: none; }
 .layout-tv .backgroundContainer { background-attachment: scroll; }
 
+/* Reduced motion: drop decorative animation only. Jellyfin's skip button and Up Next
+   card need their opacity transitions to fire transitionend, so leave transitions alone. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  *, *::before, *::after { animation: none !important; }
 }
