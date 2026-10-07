@@ -313,6 +313,10 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
    Jellyfin sets `contain: paint` on cards and `margin-left: 0` on the first box in a
    scroller, which clips the ring on the left. Lift the paint containment on hover cards. */
 .card-hoverable { contain: layout style !important; }
+/* Jellyfin only raises z-index on :focus; do it on hover too so the next card in the
+   row doesn't paint over the ring and glow. */
+.card-hoverable:hover,
+.card-hoverable:focus-within { position: relative !important; z-index: 10 !important; }
 .card-hoverable .cardBox {
   transition: transform .25s var(--rf-ease-out), box-shadow .25s var(--rf-ease-out) !important;
 }
