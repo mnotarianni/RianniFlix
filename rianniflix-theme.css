@@ -103,7 +103,13 @@ html[data-theme="dark"] {
 html, body {
   font-family: var(--rf-font-body) !important;
   color: var(--rf-text);
-  background-color: var(--rf-bg) !important;
+}
+/* Background goes on <html> ONLY. TV apps (Tizen/webOS) and Jellyfin Media Player play
+   video in a native layer behind the page and rely on the document being transparent
+   during playback; an opaque <body> would black out the video. */
+html { background-color: var(--rf-bg); }
+html.transparentDocument, html.transparentDocument body {
+  background: none !important; background-color: transparent !important;
 }
 
 h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
@@ -204,15 +210,20 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   transition: background .18s var(--rf-ease-out), color .18s var(--rf-ease-out);
 }
 .MuiToolbar-root .MuiButton-root:hover { background: rgba(255,255,255,.06); color: var(--rf-text); }
-/* Active library: Jellyfin switches the button to color="primary" */
-.MuiToolbar-root .MuiButton-root.MuiButton-colorPrimary,
+/* Active library: Jellyfin switches the (text) button to color="primary".
+   Scoped to text buttons so Play All / contained buttons in the library toolbar
+   (also color="primary") keep the gradient treatment. */
+.MuiToolbar-root .MuiButton-text.MuiButton-colorPrimary,
 .MuiToolbar-root .MuiButton-root[aria-current="page"],
 .MuiToolbar-root .MuiButton-root.Mui-selected {
   background: var(--rf-accent-1-soft) !important;
   color: var(--rf-text) !important;
   box-shadow: inset 0 -2px 0 var(--rf-accent-1);
 }
-.MuiToolbar-root .MuiButton-root.MuiButton-colorPrimary .MuiButton-startIcon { color: var(--rf-accent-1); }
+.MuiToolbar-root .MuiButton-text.MuiButton-colorPrimary .MuiButton-startIcon { color: var(--rf-accent-1); }
+/* Split buttons (Play All + shuffle): keep them as two clean pills */
+.MuiButtonGroup-root { gap: 4px; box-shadow: none !important; }
+.MuiButtonGroup-root .MuiButton-root { border-radius: var(--rf-radius-pill) !important; }
 .MuiToolbar-root .MuiIconButton-root { color: var(--rf-text-muted); border-radius: var(--rf-radius-pill); }
 .MuiToolbar-root .MuiIconButton-root:hover { color: var(--rf-text); background: rgba(255,255,255,.06); }
 
@@ -686,6 +697,10 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
   border-radius: var(--rf-radius-lg) !important;
   box-shadow: var(--rf-shadow-lg) !important;
 }
+/* Full-screen dialogs/sheets on phones: no rounded corners or borders at the screen edge */
+.dialog.dialog-fullscreen, .actionSheet.actionsheet-fullscreen {
+  border-radius: 0 !important; border: none !important;
+}
 .dialogBackdrop { background: rgba(5,5,9,.7) !important; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .dialogBackdropOpened { opacity: 1 !important; }
 .formDialogHeader:not(.formDialogHeader-clear), .formDialogFooter:not(.formDialogFooter-clear) {
@@ -765,8 +780,11 @@ a:hover { color: #fbbf24; }
 .layout-tv .upNextContainer { animation: none; }
 .layout-tv .backgroundContainer { background-attachment: scroll; }
 
-/* Reduced motion: drop decorative animation only. Jellyfin's skip button and Up Next
-   card need their opacity transitions to fire transitionend, so leave transitions alone. */
+/* Reduced motion: drop only THIS theme's decorative animations. Never blanket
+   `animation: none` — Jellyfin closes dialogs and swaps backdrops by waiting for
+   animationend on its own animations, and the skip/Up Next elements wait on transitionend. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; }
+  .skip-button, .upNextContainer, .upNextDialog,
+  #loginPage .manualLoginForm, #loginPage .visualLoginForm,
+  .mdl-slider-background-lower { animation: none !important; }
 }

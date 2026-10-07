@@ -72,6 +72,18 @@ To remove it later: `curl -X DELETE ".../Branding/Splash" -H "Authorization: Med
 - Seerr: logo upload in Settings → General (use `logo.svg` or `logo.png`)
 - Browser bookmark / PWA: `icon-192.png`, `apple-touch-icon.png`
 
+## Known limits
+
+- The admin **Dashboard** (`/dashboard`) does not load Custom CSS in Jellyfin 12.x by design,
+  so it stays on the stock dashboard theme.
+- Native apps (Swiftfin, Infuse, Android TV) draw their own UI; only the web client and the
+  Tizen/webOS TV apps use Custom CSS.
+- The theme never sets a `<body>` background and keeps `html.transparentDocument` transparent:
+  TV apps and Jellyfin Media Player render video behind the page. Don't add one.
+- Jellyfin waits for `transitionend` / `animationend` to hide the skip button, the Up Next card,
+  dialogs and old backdrops. Don't add transitions inside those elements or blanket
+  `animation: none` rules; see the comments in sections 13–16.
+
 ## Performance notes
 
 - On the TV layout (`.layout-tv`) the theme disables `backdrop-filter` and the looping
