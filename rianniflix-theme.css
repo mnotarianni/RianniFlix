@@ -46,11 +46,13 @@
   --rf-font-display: 'Space Grotesk', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --rf-font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Optional header logo. Host the image somewhere stable (e.g. https://rianniflix.com/logo.svg
-     via NPM, or Cloudflare) and set it here. Leave as none to use gradient wordmark text. */
-  --rf-logo-url: none;
-  --rf-logo-width: 140px;
-  --rf-logo-height: 28px;
+  /* Brand assets, served from the GitHub repo via jsDelivr.
+     Set --rf-logo-url to none to fall back to the gradient text wordmark. */
+  --rf-assets: https://cdn.jsdelivr.net/gh/mnotarianni/RianniFlix@main/assets;
+  --rf-logo-url: url('https://cdn.jsdelivr.net/gh/mnotarianni/RianniFlix@main/assets/logo.svg');
+  --rf-logo-width: 131px;   /* logo.svg is 278x64, keep the 4.34:1 ratio */
+  --rf-logo-height: 30px;
+  --rf-login-bg: url('https://cdn.jsdelivr.net/gh/mnotarianni/RianniFlix@main/assets/background.png');
 }
 
 /* ------------------------------------------------------------
@@ -159,30 +161,37 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 }
 .skinHeader.semiTransparent { background-color: rgba(10,10,15,.35) !important; }
 
-/* Server name button → gradient wordmark, Jellyfin icon hidden */
+/* Server name button → Rianni Flix logo image. Jellyfin icon + text hidden. */
 .MuiToolbar-root .MuiButton-root[href="/"],
 .MuiToolbar-root a.MuiButton-root[href="/"] {
-  font-family: var(--rf-font-display) !important;
-  font-weight: 700 !important;
-  font-size: 1.15rem !important;
-  letter-spacing: -0.02em;
-  text-transform: none !important;
-  background: var(--rf-gradient);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent; color: transparent;
+  font-size: 0 !important;            /* hides the "Rianni Flix" text node */
+  padding: 6px 10px !important;
+  background: none !important;
 }
 .MuiToolbar-root .MuiButton-root[href="/"] .MuiButton-startIcon { display: none; }
-
-/* Optional image logo (set --rf-logo-url above) */
-.MuiToolbar-root .MuiButton-root[href="/"]::before,
+.MuiToolbar-root .MuiButton-root[href="/"]::before {
+  content: '';
+  display: inline-block;
+  width: var(--rf-logo-width);
+  height: var(--rf-logo-height);
+  background: var(--rf-logo-url) no-repeat left center / contain;
+  transition: filter .2s var(--rf-ease-out), transform .2s var(--rf-ease-out);
+}
+.MuiToolbar-root .MuiButton-root[href="/"]:hover::before {
+  filter: drop-shadow(0 0 10px var(--rf-accent-1-glow));
+  transform: translateY(-1px);
+}
+/* TV / legacy header title */
 .pageTitleWithLogo.pageTitleWithDefaultLogo {
   background-image: var(--rf-logo-url) !important;
   background-repeat: no-repeat; background-size: contain; background-position: left center;
+  width: 9em; height: 2.2em;
 }
-.MuiToolbar-root .MuiButton-root[href="/"]::before {
-  content: ''; display: none;
-  width: var(--rf-logo-width); height: var(--rf-logo-height);
-}
+
+/* To use a gradient text wordmark instead of the image, replace the block above with:
+   .MuiToolbar-root .MuiButton-root[href="/"] { font-family: var(--rf-font-display) !important;
+     font-weight: 700 !important; font-size: 1.15rem !important; background: var(--rf-gradient);
+     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; } */
 
 /* Library tabs in the app bar */
 .MuiToolbar-root .MuiButton-root {
@@ -426,6 +435,10 @@ h1, h2, h3, .sectionTitle, .itemName, .osdTitle, .formDialogHeaderTitle,
 /* ------------------------------------------------------------
    10. LOGIN PAGE
    ------------------------------------------------------------ */
+#loginPage {
+  background: var(--rf-login-bg) center / cover no-repeat fixed;
+  min-height: 100vh;
+}
 #loginPage .manualLoginForm,
 #loginPage .visualLoginForm {
   background: var(--rf-surface-glass);
